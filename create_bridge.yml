@@ -12,6 +12,5 @@
   - command: '{{ item }}'
     with_items:
     - ip addr add 2.2.2.2/24 dev '{{ bridge_name }}'
-    - ip link set 
-'{{ bridge_name }}' up
+    - ip link set '{{ bridge_name }}' up
     ignore_errors: yes

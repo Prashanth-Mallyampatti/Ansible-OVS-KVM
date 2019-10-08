@@ -5,19 +5,28 @@
     network_name: 'pmallya-netl3'
     
     params:
-      - name: pmallyaVM4
+      - name: pmallya10
         ram: 2097152
         vcpu: 4
-        size: 10
+       # size: 10
         iso: /home/ece792/images/CentOS-7-x86_64-Minimal-1908.iso 
-        path: /var/lib/libvirt/images/pmallyaVM4.img
+        path: /var/lib/libvirt/images/pmallya10.img
         id: 59
         dev: vnet5
         alias: net5
-        mac: 11:22:33:44:55:66
-        mac_def: aa:bb:cc:dd:ee:ff
+        mac: 00:bb:cb:db:eb:fb
+        mac_def: 00:bb:cc:dd:ee:ff
     
   tasks:
   - name: Create VMs
     virt:
-      name: "{{ name1 }}"
+      name: "{{ item.name }}"
+      command: define
+      xml: "{{ lookup('template', 'templates/vm.xml.j2') }}"
+    with_items: "{{ params }}"
+
+  - name: Start VM
+    virt:
+      name: "{{ item.name }}"
+      command: create
+    with_items: "{{ params }}"

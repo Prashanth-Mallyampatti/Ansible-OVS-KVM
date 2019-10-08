@@ -1,6 +1,5 @@
 <domain type='kvm' id='{{ item.id }}'>
   <name>{{ item.name }}</name>
-  <uuid>7376a91d-1318-464f-9286-cb51c3c8a716</uuid>
   <memory unit='KiB'>{{ item.ram }}</memory>
   <currentMemory unit='KiB'>{{ item.ram }}</currentMemory>
   <vcpu placement='static'>{{ item.vcpu }}</vcpu>
@@ -125,7 +124,7 @@
       <listen type='address' address='127.0.0.1'/>
       <image compression='off'/>
     </graphics>
-    <sound model='ich6'><interface type="bridge">
+    <sound model='ich6'>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
     </sound>
     <video>
