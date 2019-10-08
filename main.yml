@@ -1,0 +1,7 @@
+---
+- hosts: localhost
+  gather_facts: no
+
+- import_playbook: install_packages.yml
+- import_playbook: create_bridge.yml
+- import_playbook: create_network.yml

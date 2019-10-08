@@ -1,0 +1,24 @@
+---
+- hosts: localhost
+  vars:
+    bridge_name: 'ovs-br1'
+
+  tasks:
+  - name: Creating OVS bridge
+    openvswitch_bridge:
+      bridge: '{{ bridge_name }}'
+      state: present
+        
+  - name: Configure ovs
+    command: "{{ item }}"
+    with_items: 
+      - ip addr flush dev '{{ bridge_name }}'
+      - ip addr add 2.2.2.1/24 dev '{{ bridge_name }}'
+  
+  - command: ovs-vsctl list-ifaces '{{ bridge_name }}'
+    register: result
+   
+  - command: ovs-vsctl add-port '{{ bridge_name }}' '{{ bridge_name }}'
+    when: result ==  ""
+
+  - command: ip link set dev '{{ bridge_name }}' up

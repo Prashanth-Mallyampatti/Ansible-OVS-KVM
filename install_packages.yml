@@ -1,0 +1,22 @@
+---
+- hosts: localhost
+  tasks:
+  - name: Install libvirt packages if necessary
+    apt:
+      name:
+      - qemu-kvm
+      - libvirt-bin
+      - python-libvirt
+      - python-lxml
+      - virt-manager
+      - virt-viewer
+      - virtinst
+      - apache2
+      state: present
+    when: ansible_os_family == "Debian"
+
+  - name: Installing OVS
+    apt:
+      name:
+      - openvswitch-switch
+      state: present
