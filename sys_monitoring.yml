@@ -1,0 +1,10 @@
+---
+- hosts: vms
+  gather_facts: yes
+ 
+  tasks: 
+  - name:
+    command: ls
+    register: result
+  
+  - debug: var=result      

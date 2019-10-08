@@ -1,4 +1,6 @@
 ---
-  - hosts: localhost
+- hosts: localhost
+  gather_facts: no
     
-    
+- import_playbook: sys_monitoring.yml
+#- import_playbook: sys_clean.yml    

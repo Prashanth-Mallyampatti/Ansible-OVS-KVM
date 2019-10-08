@@ -1,0 +1,4 @@
+[vms]
+localhost ansible_connection=local
+2.2.2.100 ansible_ssh_user=root ansible_ssh_private_key=./host_keys/id_rsa.pub
+2.2.2.200 ansible_ssh_user=root ansible_ssh_private_key=./host_keys/id_rsa.pub
