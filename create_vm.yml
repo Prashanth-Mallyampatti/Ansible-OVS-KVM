@@ -1,0 +1,23 @@
+---
+- hosts: localhost
+  vars:
+    bridge_name: 'ovs-br1'
+    network_name: 'pmallya-netl3'
+    
+    params:
+      - name: pmallyaVM4
+        ram: 2097152
+        vcpu: 4
+        size: 10
+        iso: /home/ece792/images/CentOS-7-x86_64-Minimal-1908.iso 
+        path: /var/lib/libvirt/images/pmallyaVM4.img
+        id: 59
+        dev: vnet5
+        alias: net5
+        mac: 11:22:33:44:55:66
+        mac_def: aa:bb:cc:dd:ee:ff
+    
+  tasks:
+  - name: Create VMs
+    virt:
+      name: "{{ name1 }}"
