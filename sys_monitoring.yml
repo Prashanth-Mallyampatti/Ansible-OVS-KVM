@@ -14,7 +14,7 @@
 - hosts: vms
   vars:
     monitoring_file: './files/monitoring.sh' 
-    granularity: 2
+    granularity: 60
     
 
   vars_prompt:

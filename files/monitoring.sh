@@ -5,16 +5,16 @@ set -e
 # Command line arguments
 T=$1
 TP=$2
-X=$3
-Y=$4
+#X=$3
+#Y=$4
 
 # Log Files
 MONITORING_DIR="/var/customlogs/logs"
 CPU_LOG_FILE="$MONITORING_DIR/cpu_log.csv"
 ALERT_LOG_FILE="$MONITORING_DIR/alert_log_file.csv"
 CPU_CORE=`nproc --all`
-X=$(( $X * $CPU_CORE ))
-Y=$(( $Y * $CPU_CORE ))
+#X=$(( $X * $CPU_CORE ))
+#Y=$(( $Y * $CPU_CORE ))
 FLAG1=0
 FLAG2=0
 HOST_NAME="$(uname -n)"
@@ -111,9 +111,9 @@ log_alerts()
 
 ################# Main #####################
 
-if [[ $# -lt 4 ]] || [[ $2 -lt $1 ]]
+if [[ $# -lt 2 ]] || [[ $2 -lt $1 ]]
 then
-	echo "Please enter 4 arguments in the format: T TP X Y where TP>=T"
+	echo "Please enter 2 arguments in the format: T TP where TP>=T"
 	echo "Exiting with error code: 1"
 	exit 1
 fi
@@ -136,7 +136,7 @@ while [ $TP -gt 0 ] && [ $T -gt 0 ]
 do
 	get_values
 	log_cpu_loads
-	check_cpu_usage
+#	check_cpu_usage
 	sleep $T
 	TP=$((TP-T))
 done
