@@ -9,7 +9,7 @@ X=$3
 Y=$4
 
 # Log Files
-MONITORING_DIR="/var/log/monitoring"
+MONITORING_DIR="/var/customlogs/logs"
 CPU_LOG_FILE="$MONITORING_DIR/cpu_log.csv"
 ALERT_LOG_FILE="$MONITORING_DIR/alert_log_file.csv"
 CPU_CORE=`nproc --all`
@@ -116,6 +116,12 @@ then
 	echo "Please enter 4 arguments in the format: T TP X Y where TP>=T"
 	echo "Exiting with error code: 1"
 	exit 1
+fi
+
+DIRECT="/var/customlogs"
+if [ ! -d $DIRECT ]
+then
+  mkdir /var/customlogs
 fi
 
 if [ ! -d "$MONITORING_DIR" ]
