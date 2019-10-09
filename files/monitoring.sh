@@ -17,6 +17,7 @@ X=$(( $X * $CPU_CORE ))
 Y=$(( $Y * $CPU_CORE ))
 FLAG1=0
 FLAG2=0
+HOST_NAME="$(uname -n)"
 
 # Create Log files
 get_file()
@@ -38,8 +39,8 @@ update_file_headers()
 {
 	if [ $1 = $CPU_LOG_FILE ]
 	then
-		echo -e "Timestamp  1 min load average  5 min load average  15 min load average" > $1
-		sed -i '1s|$|\n---------  ------------------  ------------------  -------------------|' $1
+		echo -e "HostName  Timestamp  1 min load average  5 min load average  15 min load average" > $1
+		sed -i '1s|$|\n--------  ---------  ------------------  ------------------  -------------------|' $1
 	elif [ $1 = $ALERT_LOG_FILE ]
 	then
 		echo -e "Timestamp   Alert Message         1 min load average  5 min load average  15 min load average" >> $1	
@@ -67,7 +68,7 @@ log_cpu_loads()
 	ONE_MIN_AVG=$(echo "$ONE_MIN/100" | awk -F "/" '{printf "%.2f", ($1/$2)}')
 	FIVE_MIN_AVG=$(echo "$FIVE_MIN/100" | awk -F "/" '{printf "%.2f", ($1/$2)}')
 	FIFTEEN_MIN_AVG=$(echo "$FIFTEEN_MIN/100" | awk -F "/" '{printf "%.2f", ($1/$2)}')
-	echo -e " $TIMESTAMP \t  $ONE_MIN_AVG \t\t    $FIVE_MIN_AVG  \t\t  $FIFTEEN_MIN_AVG" >> $CPU_LOG_FILE
+	echo -e "$HOST_NAME    $TIMESTAMP \t  $ONE_MIN_AVG \t\t\t $FIVE_MIN_AVG  \t\t  $FIFTEEN_MIN_AVG" >> $CPU_LOG_FILE
 }
 
 # Check for CPU usage and generate alerts

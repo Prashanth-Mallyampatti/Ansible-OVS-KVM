@@ -1,10 +1,30 @@
 ---
-- hosts: vms
-  gather_facts: yes
- 
-  tasks: 
-  - name:
-    command: ls
-    register: result
+- hosts: localhost
+  vars:
+    monitoring_file: './files/monitoring.sh'
   
-  - debug: var=result      
+  tasks:
+    - name: Set file permissions
+      file:
+        path: "{{ monitoring_file }}"
+        owner: root
+        group: root
+        mode: '0777'
+
+- hosts: vms
+  vars:
+    monitoring_file: './files/monitoring.sh' 
+    granularity: 2
+    
+
+  vars_prompt:
+  - name: run_time
+    prompt: "Enter total run time in seconds"
+    default: 180
+
+  tasks:
+    - name: Copy script
+      copy: src=./files/monitoring.sh  dest=/root  mode=0777
+    
+    - name: Run script
+      command: bash /root/monitoring.sh '{{ granularity }}' '{{ run_time }}' 100 100
