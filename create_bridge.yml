@@ -1,16 +1,18 @@
 ---
 - hosts: localhost
-  vars:
-    bridge_name: 'ovs-br1'
+  vars_files:
+    - network_configs.yml
 
   tasks:
   - name: Creating OVS bridge
     openvswitch_bridge:
-      bridge: '{{ bridge_name }}'
+      bridge: "{{ network[item].bridge_name}}"
       state: present
-  
-  - command: '{{ item }}'
-    with_items:
-    - ip addr add 2.2.2.2/24 dev '{{ bridge_name }}'
-    - ip link set '{{ bridge_name }}' up
-    ignore_errors: yes
+    with_items: "{{ network }}"
+
+
+#  - command: '{{ item }}'
+#    with_items:
+#    - ip addr add 2.2.2.2/24 dev '{{ bridge_name }}'
+#    - ip link set '{{ bridge_name }}' up
+#    ignore_errors: yes

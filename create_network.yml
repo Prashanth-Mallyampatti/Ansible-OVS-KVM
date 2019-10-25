@@ -1,31 +1,34 @@
 ---
 - hosts: localhost
-  vars:
-    bridge_name: 'ovs-br1'
-    network_name: 'pmallya-netl3'
+  vars_files:
+    - network_configs.yml
 
   tasks:
   - name: Define the network
     virt_net:
       command: define
-      name: '{{ network_name }}'
-      xml: '{{ lookup("template", "templates/pmallya-netl3.xml.j2") }}'
+      name: '{{ network[item].network_name }}'
+      xml: '{{ lookup("template", "templates/bridge.xml.j2") }}'
       state: present
+    with_items: "{{ network }}"
+    become: yes
 
   - name: Create the network
     virt_net:
       command: create
-      name: '{{ network_name }}'
+      name: '{{ network[item].network_name }}'
       autostart: true
+    with_items: "{{ network }}"
     ignore_errors: true
+    become: yes
 
-  - name: Start the network
-    virt_net:
-      command: start
-      name: '{{ network_name }}'
-
-  - name: Show networks
-    virt_net:
-      command: list_nets
-    register: out
-  - debug: var=out
+#  - name: Start the network
+#    virt_net:
+#      command: start
+#      name: '{{ network_name }}'
+#
+#  - name: Show networks
+#    virt_net:
+#      command: list_nets
+#    register: out
+#  - debug: var=out
