@@ -4,9 +4,11 @@
       network_name: internet
       bridge_name: SW1
       bridge_type: nat/dhcp
-      ip_address: 9.9.9.1/24
-      dhcp_range: 9.9.9.2,9.9.9.255
-      subnet_address: 9.9.9.0/24
+      ip_address: 9.9.9.1
+      dhcp_start_range: 9.9.9.2
+      dhcp_end_range: 9.9.9.255
+      subnet_address: 9.9.9.0
+      subnet_mask_num: 24
     l2:
       network_name: l2
       bridge_name: SW2
@@ -15,9 +17,11 @@
       network_name: l3
       bridge_name: SW3
       bridge_type: routed
-      ip_address: 10.10.10.1/24
+      ip_address: 10.10.10.1
+      subnet_mask_num: 24
     other:
       network_name: other
       bridge_name: SW4
-      bridge_name: routed
-      ip_address: 11.11.11.1/24
+      bridge_type: routed
+      ip_address: 11.11.11.1
+      subnet_mask_num: 24

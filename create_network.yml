@@ -1,5 +1,6 @@
 ---
 - hosts: localhost
+  gather_facts: True
   vars_files:
     - network_configs.yml
 
@@ -20,6 +21,14 @@
       autostart: true
     with_items: "{{ network }}"
     ignore_errors: true
+    become: yes
+
+  - name: Assign IP addresses
+    command: "ip addr add {{ network[item].ip_address }}/{{ network[item].subnet_mask_num }} dev {{ network[item].bridge_name }}"
+    when: 
+      - network[item].bridge_type != "bridge"
+      - (ansible_facts[network[item].bridge_name]['ipv4'] is not defined) or (ansible_facts[network[item].bridge_name]['ipv4']['address'] != network[item].ip_address)
+    with_items: "{{ network }}"
     become: yes
 
 #  - name: Start the network
