@@ -21,7 +21,6 @@
       name: '{{ network[item].network_name }}'
       autostart: true
     with_items: "{{ network }}"
-    ignore_errors: true
     become: yes
 
   - name: Assign IP addresses to non bridge devices
@@ -53,15 +52,15 @@
     with_items: "{{ network }}"
     become: yes
 
-#  - name: Start the network
-#    virt_net:
-#      command: start
-#      name: '{{ network[item].network_name }}'
-#    with_items: "{{ network }}"
-#    become: yes
-#    
-#  - name: Show networksexcept-interface=lo
-#    virt_net:
-#      command: list_nets
-#    register: out
-#  - debug: var=out
+  - name: Start the network
+    virt_net:
+      command: start
+      name: '{{ network[item].network_name }}'
+    with_items: "{{ network }}"
+    become: yes
+    
+  - name: Show networks
+    virt_net:
+      command: list_nets
+    register: out
+  - debug: var=out
