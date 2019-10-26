@@ -40,6 +40,19 @@
     with_items: "{{ network }}"
     become: yes
 
+  - name: Adding NAT functionality to NAT bridges
+    iptables:
+      table: nat
+      chain: POSTROUTING
+      action: append
+      state: present
+      source: "{{ network[item].subnet_address }}/{{ network[item].subnet_mask_num }}"
+      jump: MASQUERADE
+    when:
+      - '"nat" in network[item].bridge_type'
+    with_items: "{{ network }}"
+    become: yes
+
 #  - name: Start the network
 #    virt_net:
 #      command: start
