@@ -77,6 +77,20 @@
     <controller type='virtio-serial' index='0'>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0'/>
     </controller>
+<!-- BEGIN ANSIBLE MANAGED BLOCK -->
+<interface type='bridge'>
+  <source network='l2 bridge='SW2'/>
+  <virtualport type='openvswitch'/>
+  <model type='virtio'/>
+  <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+</interface>
+<interface type='network'>
+  <source network='l3 bridge='SW3'/>
+  <virtualport type='openvswitch'/>
+  <model type='virtio'/>
+  <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+</interface>
+<!-- END ANSIBLE MANAGED BLOCK -->
     <serial type='pty'>
       <target type='isa-serial' port='0'>
         <model name='isa-serial'/>
