@@ -13,6 +13,7 @@
       - virtinst
       - apache2
       - network-manager
+      - libguestfs-tools
       state: present
     when: ansible_os_family == "Debian"
   

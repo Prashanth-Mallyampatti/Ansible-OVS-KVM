@@ -1,12 +1,12 @@
 ---
   vms:
-    - name: VM1
+    - name: AnsibleVM1
       mem: 512
       vcpu: 1
       disk: 12G
       networks: ["internet", "l2" ]
     
-    - name: VM2
+    - name: AnsibleVM2
       mem: 512
       vcpu: 1
       disk: 12G

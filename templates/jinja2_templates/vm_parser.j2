@@ -5,7 +5,7 @@
   <source network='{{ntwk.network_name}}' bridge='{{ntwk.bridge_name}}'/>
   <virtualport type='openvswitch'/>
   <model type='virtio'/>
-  <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+  <address type='pci'/>
 </interface>
 {% endfor %}
 {% else -%}
@@ -14,8 +14,8 @@
   <source network='{{ntwk.network_name}}' bridge='{{ntwk.bridge_name}}'/>
   <virtualport type='openvswitch'/>
   <model type='virtio'/>
-  <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+  <address type='pci'/>
 </interface>
 {% endfor %}
-{%- endif %}  
+{%- endif %}
 {%- endfor %}

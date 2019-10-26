@@ -1,7 +1,7 @@
-<domain type='kvm' id='{{ item.id }}'>
+<domain type='kvm'>
   <name>{{ item.name }}</name>
-  <memory unit='KiB'>{{ item.ram }}</memory>
-  <currentMemory unit='KiB'>{{ item.ram }}</currentMemory>
+  <memory unit='GB'>{{ item.mem }}</memory>
+  <currentMemory unit='GB'>{{ item.mem }}</currentMemory>
   <vcpu placement='static'>{{ item.vcpu }}</vcpu>
   <resource>
     <partition>/machine</partition>
@@ -44,7 +44,7 @@
     <emulator>/usr/bin/kvm-spice</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='qcow2'/>
-      <source file='{{ item.path }}'/>
+      <source file='/var/lib/libvirt/images/{{ item.name }}.img'/>
       <backingStore/>
       <target dev='vda' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0'/>
@@ -78,17 +78,17 @@
       <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0'/>
     </controller>
 <!-- BEGIN ANSIBLE MANAGED BLOCK -->
-<interface type='network'>
-  <source network='internet' bridge='SW1'/>
-  <virtualport type='openvswitch'/>
-  <model type='virtio'/>
-  <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
-</interface>
 <interface type='bridge'>
   <source network='l2' bridge='SW2'/>
   <virtualport type='openvswitch'/>
   <model type='virtio'/>
-  <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+  <address type='pci'/>
+</interface>
+<interface type='network'>
+  <source network='l3' bridge='SW3'/>
+  <virtualport type='openvswitch'/>
+  <model type='virtio'/>
+  <address type='pci'/>
 </interface>
 <!-- END ANSIBLE MANAGED BLOCK -->
     <serial type='pty'>

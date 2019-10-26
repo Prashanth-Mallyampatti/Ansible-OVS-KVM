@@ -1,6 +1,8 @@
 ---
 - hosts: localhost
   
+  vars:
+    disk_dir: /var/lib/libvirt/images
   vars_files:
     - config_files/vm_configs.yml
     - config_files/network_configs.yml
@@ -9,7 +11,7 @@
   - name: Parse VM data
     template:
       src: templates/jinja2_templates/vm_parser.j2 
-      dest: "templates/VM_Templates/{{item.name}}_interfaces.xml"
+      dest: "templates/VM_Templates/{{ item.name }}_interfaces.xml"
     with_items: "{{ vms }}"
     become: yes
 
@@ -25,19 +27,29 @@
       path: templates/VM_Templates/{{item.name}}.xml.j2
       marker: "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
       insertbefore: "<serial type='pty'>"
-      block: "{{ lookup('file', 'templates/VM_Templates/{{item.name}}_interfaces.xml') }}"
+      block: "{{ lookup('file', 'templates/VM_Templates/{{ item.name }}_interfaces.xml') }}"
+    with_items: "{{ vms }}"
+    become: yes
+  
+  - name: Get list of VM disks
+    command: "ls {{ disk_dir }}"
+    register: disk_file
+    changed_when: "disk_file.rc != 0"
+    become: yes
+
+  - name: Create VM disks
+    command: virt-builder --format qcow2 centos-7.7 -o '{{disk_dir}}/{{item.name}}.img' --size '{{item.disk}}' --install wireshark,iperf3 --root-password password:admin
+    when: item.name not in disk_file.stdout
     with_items: "{{ vms }}"
     become: yes
 
-  
-#  tasks:
-#  - name: Define VMs
-#    virt:
-#      name: "{{ item.name }}"
-#      command: define
-#      xml: "{{ lookup('template', 'templates/vm.xml.j2') }}"
-#    with_items: "{{ params }}"
-#
+  - name: Define VMs
+    virt:
+      name: "{{ item.name }}"
+      command: define
+      xml: "{{ lookup('template', 'templates/VM_Templates/{{ item.name }}.xml.j2') }}"
+    with_items: "{{ vms }}"
+
 #  - name: Create VM
 #    virt:
 #      name: "{{ item.name }}"
