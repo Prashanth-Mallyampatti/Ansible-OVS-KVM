@@ -1,6 +1,7 @@
 ---
 - hosts: localhost
-  gather_facts: True
+  vars:
+    result: 0
   vars_files:
     - network_configs.yml
 
@@ -23,7 +24,7 @@
     ignore_errors: true
     become: yes
 
-  - name: Assign IP addresses
+  - name: Assign IP addresses to non bridge devices
     command: "ip addr add {{ network[item].ip_address }}/{{ network[item].subnet_mask_num }} dev {{ network[item].bridge_name }}"
     when: 
       - network[item].bridge_type != "bridge"
@@ -31,12 +32,22 @@
     with_items: "{{ network }}"
     become: yes
 
+  - name: Create DNS server for DHCP bridges
+    command: "dnsmasq --interface={{ network[item].bridge_name }} --bind-interfaces --dhcp-range={{ network[item].dhcp_start_range }},{{ network[item].dhcp_end_range }},{{ network[item].dhcp_lease_time }}"
+    when: 
+      - '"dhcp" in network[item].bridge_type'
+    ignore_errors: true
+    with_items: "{{ network }}"
+    become: yes
+
 #  - name: Start the network
 #    virt_net:
 #      command: start
-#      name: '{{ network_name }}'
-#
-#  - name: Show networks
+#      name: '{{ network[item].network_name }}'
+#    with_items: "{{ network }}"
+#    become: yes
+#    
+#  - name: Show networksexcept-interface=lo
 #    virt_net:
 #      command: list_nets
 #    register: out

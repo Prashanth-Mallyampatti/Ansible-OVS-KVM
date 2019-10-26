@@ -12,9 +12,10 @@
       - virt-viewer
       - virtinst
       - apache2
+      - network-manager
       state: present
     when: ansible_os_family == "Debian"
-
+  
   - name: Installing OVS
     apt:
       name:
