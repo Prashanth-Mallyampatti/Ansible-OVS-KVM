@@ -2,30 +2,32 @@
 - hosts: localhost
   
   vars_files:
-    - vm_configs.yml
-    - network_configs.yml
+    - config_files/vm_configs.yml
+    - config_files/network_configs.yml
 
   tasks:
   - name: Parse VM data
     template:
-      src: vm.j2 
-      dest: "{{item.name}}_interfaces.xml"
+      src: templates/jinja2_templates/vm_parser.j2 
+      dest: "templates/VM_Templates/{{item.name}}_interfaces.xml"
     with_items: "{{ vms }}"
+    become: yes
 
   - name: Create VM templates
     copy:
-      src: templates/vm.xml.j2
+      src: templates/jinja2_templates/vm_main.xml.j2
       dest: templates/VM_Templates/{{item.name}}.xml.j2
     with_items: "{{ vms }}"
+    become: yes
 
   - name: Populate VM templates
     blockinfile:
       path: templates/VM_Templates/{{item.name}}.xml.j2
       marker: "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
       insertbefore: "<serial type='pty'>"
-      block: "{{ lookup('file', '{{item.name}}_interfaces.xml') }}"
-      backup: yes
+      block: "{{ lookup('file', 'templates/VM_Templates/{{item.name}}_interfaces.xml') }}"
     with_items: "{{ vms }}"
+    become: yes
 
   
 #  tasks:

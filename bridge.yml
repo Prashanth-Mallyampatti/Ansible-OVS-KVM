@@ -1,7 +1,7 @@
 ---
 - hosts: localhost
   vars_files:
-    - network_configs.yml
+    - config_files/network_configs.yml
 
   tasks:
   - name: Creating OVS bridge

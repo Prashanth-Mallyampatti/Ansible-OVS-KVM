@@ -1,11 +1,11 @@
 <interface type='network'>
-  <source network='internet bridge='SW1'/>
+  <source network='internet' bridge='SW1'/>
   <virtualport type='openvswitch'/>
   <model type='virtio'/>
   <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
 </interface>
 <interface type='bridge'>
-  <source network='l2 bridge='SW2'/>
+  <source network='l2' bridge='SW2'/>
   <virtualport type='openvswitch'/>
   <model type='virtio'/>
   <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>

@@ -3,14 +3,14 @@
   vars:
     result: 0
   vars_files:
-    - network_configs.yml
+    - config_files/network_configs.yml
 
   tasks:
   - name: Define the network
     virt_net:
       command: define
       name: '{{ item.network_name }}'
-      xml: '{{ lookup("template", "templates/bridge.xml.j2") }}'
+      xml: '{{ lookup("template", "templates/jinja2_templates/bridge.xml.j2") }}'
       state: present
     with_items: 
       - "{{ network.internet }}"
