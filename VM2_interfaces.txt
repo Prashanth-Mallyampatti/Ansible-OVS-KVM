@@ -1,21 +1,12 @@
-{% for ntwk_name in item.networks -%}
-{% if ntwk_name == "l2" -%}
-{% for ntwk in network[ntwk_name] %}
 <interface type='bridge'>
-  <source network='{{ntwk.network_name}} bridge='{{ntwk.bridge_name}}'/>
+  <source network='l2 bridge='SW2'/>
   <virtualport type='openvswitch'/>
   <model type='virtio'/>
   <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
 </interface>
-{% endfor %}
-{% else -%}
-{% for ntwk in network[ntwk_name] %}
 <interface type='network'>
-  <source network='{{ntwk.network_name}} bridge='{{ntwk.bridge_name}}'/>
+  <source network='l3 bridge='SW3'/>
   <virtualport type='openvswitch'/>
   <model type='virtio'/>
   <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
 </interface>
-{% endfor %}
-{%- endif %}  
-{%- endfor %}

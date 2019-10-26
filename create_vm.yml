@@ -9,13 +9,9 @@
   - name: Parse VM data
     template:
       src: vm.j2 
-      dest: output.txt
-    #with_items: "{{ vms }}"
+      dest: "{{item.name}}_interfaces.txt"
+    with_items: "{{ vms }}"
      
-
-
-
-    
 #  tasks:
 #  - name: Define VMs
 #    virt:
