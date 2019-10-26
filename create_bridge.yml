@@ -6,10 +6,18 @@
   tasks:
   - name: Creating OVS bridge
     openvswitch_bridge:
-      bridge: "{{ network[item].bridge_name }}"
+      bridge: "{{ item.bridge_name }}"
       state: present
-    with_items: "{{ network }}"
+    with_items: 
+      - "{{ network.internet }}"
+      - "{{ network.l2 }}"
+      - "{{ network.l3 }}"
+      - "{{ network.other }}"
 
   - name: Set the bridges UP
-    command: "ip link set {{ network[item].bridge_name }} up"
-    with_items: "{{ network }}"
+    command: "ip link set {{ item.bridge_name }} up"
+    with_items: 
+      - "{{ network.internet }}"
+      - "{{ network.l2 }}"
+      - "{{ network.l3 }}"
+      - "{{ network.other }}"

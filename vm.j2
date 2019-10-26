@@ -1,0 +1,9 @@
+{% for vm in vms %}
+  {% for ntwk_name in vm['networks'] %}
+      {% if ntwk_name == "l2" %}
+      {% for ntwk in network[ntwk_name] %}
+          {{ntwk.bridge_name}}
+      {% endfor %}
+      {% endif %}  
+  {% endfor %}
+{% endfor %}

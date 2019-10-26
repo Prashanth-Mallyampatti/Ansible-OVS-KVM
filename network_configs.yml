@@ -1,28 +1,28 @@
 ---
   network:
     internet:
-      network_name: internet
-      bridge_name: SW1
-      bridge_type: nat/dhcp
-      ip_address: 9.9.9.1
-      dhcp_start_range: 9.9.9.2
-      dhcp_end_range: 9.9.9.255
-      dhcp_lease_time: 12h
-      subnet_address: 9.9.9.0
-      subnet_mask_num: 24
+      - network_name: internet
+        bridge_name: SW1
+        bridge_type: nat/dhcp
+        ip_address: 9.9.9.1
+        dhcp_start_range: 9.9.9.2
+        dhcp_end_range: 9.9.9.255
+        dhcp_lease_time: 12h
+        subnet_address: 9.9.9.0
+        subnet_mask_num: 24
     l2:
-      network_name: l2
-      bridge_name: SW2
-      bridge_type: bridge
+      - network_name: l2
+        bridge_name: SW2
+        bridge_type: bridge
     l3:
-      network_name: l3
-      bridge_name: SW3
-      bridge_type: routed
-      ip_address: 10.10.10.1
-      subnet_mask_num: 24
+      - network_name: l3
+        bridge_name: SW3
+        bridge_type: routed
+        ip_address: 10.10.10.1
+        subnet_mask_num: 24
     other:
-      network_name: other
-      bridge_name: SW4
-      bridge_type: routed
-      ip_address: 11.11.11.1
-      subnet_mask_num: 24
+      - network_name: other
+        bridge_name: SW4
+        bridge_type: routed
+        ip_address: 11.11.11.1
+        subnet_mask_num: 24

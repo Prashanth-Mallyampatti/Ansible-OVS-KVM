@@ -9,34 +9,50 @@
   - name: Define the network
     virt_net:
       command: define
-      name: '{{ network[item].network_name }}'
+      name: '{{ item.network_name }}'
       xml: '{{ lookup("template", "templates/bridge.xml.j2") }}'
       state: present
-    with_items: "{{ network }}"
+    with_items: 
+      - "{{ network.internet }}"
+      - "{{ network.l2 }}"
+      - "{{ network.l3 }}"
+      - "{{ network.other }}"
     become: yes
 
   - name: Create the network
     virt_net:
       command: create
-      name: '{{ network[item].network_name }}'
+      name: '{{ item.network_name }}'
       autostart: true
-    with_items: "{{ network }}"
+    with_items: 
+      - "{{ network.internet }}"
+      - "{{ network.l2 }}"
+      - "{{ network.l3 }}"
+      - "{{ network.other }}"
     become: yes
 
   - name: Assign IP addresses to non bridge devices
-    command: "ip addr add {{ network[item].ip_address }}/{{ network[item].subnet_mask_num }} dev {{ network[item].bridge_name }}"
+    command: "ip addr add {{ item.ip_address }}/{{ item.subnet_mask_num }} dev {{ item.bridge_name }}"
     when: 
-      - network[item].bridge_type != "bridge"
-      - (ansible_facts[network[item].bridge_name]['ipv4'] is not defined) or (ansible_facts[network[item].bridge_name]['ipv4']['address'] != network[item].ip_address)
-    with_items: "{{ network }}"
+      - item.bridge_type != "bridge"
+      - (ansible_facts[item.bridge_name]['ipv4'] is not defined) or (ansible_facts[item.bridge_name]['ipv4']['address'] != item.ip_address)
+    with_items: 
+      - "{{ network.internet }}"
+      - "{{ network.l2 }}"
+      - "{{ network.l3 }}"
+      - "{{ network.other }}"
     become: yes
 
   - name: Create DNS server for DHCP bridges
-    command: "dnsmasq --interface={{ network[item].bridge_name }} --bind-interfaces --dhcp-range={{ network[item].dhcp_start_range }},{{ network[item].dhcp_end_range }},{{ network[item].dhcp_lease_time }}"
+    command: "dnsmasq --interface={{ item.bridge_name }} --bind-interfaces --dhcp-range={{ item.dhcp_start_range }},{{ item.dhcp_end_range }},{{ item.dhcp_lease_time }}"
     when: 
-      - '"dhcp" in network[item].bridge_type'
+      - '"dhcp" in item.bridge_type'
     ignore_errors: true
-    with_items: "{{ network }}"
+    with_items: 
+      - "{{ network.internet }}"
+      - "{{ network.l2 }}"
+      - "{{ network.l3 }}"
+      - "{{ network.other }}"
     become: yes
 
   - name: Adding NAT functionality to NAT bridges
@@ -45,18 +61,26 @@
       chain: POSTROUTING
       action: append
       state: present
-      source: "{{ network[item].subnet_address }}/{{ network[item].subnet_mask_num }}"
+      source: "{{ item.subnet_address }}/{{ item.subnet_mask_num }}"
       jump: MASQUERADE
     when:
-      - '"nat" in network[item].bridge_type'
-    with_items: "{{ network }}"
+      - '"nat" in item.bridge_type'
+    with_items: 
+      - "{{ network.internet }}"
+      - "{{ network.l2 }}"
+      - "{{ network.l3 }}"
+      - "{{ network.other }}"
     become: yes
 
   - name: Start the network
     virt_net:
       command: start
-      name: '{{ network[item].network_name }}'
-    with_items: "{{ network }}"
+      name: '{{ item.network_name }}'
+    with_items: 
+      - "{{ network.internet }}"
+      - "{{ network.l2 }}"
+      - "{{ network.l3 }}"
+      - "{{ network.other }}"
     become: yes
     
   - name: Show networks
