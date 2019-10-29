@@ -1,7 +1,7 @@
 ---
 - hosts: localhost
-  vars:
-    result: 0
+  gather_facts: False
+
   vars_files:
     - config_files/network_configs.yml
 
@@ -64,7 +64,7 @@
       source: "{{ item.subnet_address }}/{{ item.subnet_mask_num }}"
       jump: MASQUERADE
     when:
-      - '"nat" in item.bridge_type'
+~/Ansible-OVS-KVM      - '"nat" in item.bridge_type'
     with_items: 
       - "{{ network.internet }}"
       - "{{ network.l2 }}"

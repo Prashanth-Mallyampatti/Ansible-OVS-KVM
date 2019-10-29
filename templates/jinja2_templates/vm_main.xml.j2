@@ -1,7 +1,7 @@
 <domain type='kvm'>
   <name>{{ item.name }}</name>
-  <memory unit='GB'>{{ item.mem }}</memory>
-  <currentMemory unit='GB'>{{ item.mem }}</currentMemory>
+  <memory unit='GiB'>{{ item.mem }}</memory>
+  <currentMemory unit='GiB'>{{ item.mem }}</currentMemory>
   <vcpu placement='static'>{{ item.vcpu }}</vcpu>
   <resource>
     <partition>/machine</partition>
@@ -44,7 +44,7 @@
     <emulator>/usr/bin/kvm-spice</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='qcow2'/>
-      <source file='/var/lib/libvirt/images/{{ item.name }}.img'/>
+      <source file='{{ disk_dir }}/{{ item.name }}.img'/>
       <backingStore/>
       <target dev='vda' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0'/>

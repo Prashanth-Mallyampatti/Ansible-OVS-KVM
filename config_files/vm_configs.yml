@@ -1,15 +1,15 @@
 ---
   vms:
     - name: AnsibleVM1
-      image: centos-7.7
-      mem: 512
-      vcpu: 1
+      image: centos-7.5
+      mem: 4
+      vcpu: 4
       disk: 12G
       networks: ["internet", "l2" ]
     
     - name: AnsibleVM2
-      image: centos-7.7
-      mem: 512
-      vcpu: 1
+      image: centos-7.5
+      mem: 4
+      vcpu: 4
       disk: 12G
       networks: ["l2", "l3" ]

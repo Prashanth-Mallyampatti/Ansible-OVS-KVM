@@ -1,6 +1,7 @@
 ---
 - hosts: localhost
-  
+  gather_facts: False 
+
   vars:
     disk_dir: /var/lib/libvirt/images
   vars_files:
@@ -37,10 +38,12 @@
     changed_when: "disk_file.rc != 0"
     become: yes
 
-  - name: Create VM disks
-    shell: virt-builder --format qcow2 '{{item.image}}' -o '{{disk_dir}}/{{item.name}}.img' --size '{{item.disk}}' --install wireshark,iperf3 --root-password password:admin
-    when: item.name not in disk_file.stdout
+  - name: Copy main VM image
+    copy:
+      src: "~/Ansible-OVS-KVM/temp.img"
+      dest: "{{ disk_dir }}/{{ item.name }}.img"
     with_items: "{{ vms }}"
+    when: item.name not in disk_file.stdout
     become: yes
 
   - name: Define VMs
@@ -50,15 +53,15 @@
       xml: "{{ lookup('template', 'templates/VM_Templates/{{ item.name }}.xml.j2') }}"
     with_items: "{{ vms }}"
 
-#  - name: Create VM
-#    virt:
-#      name: "{{ item.name }}"
-#      command: create
-#      state: destroyed
-#    with_items: "{{ params }}"
-#
-#  - name: Start VM
-#    virt:
-#      name: "{{ item.name }}"
-#      command: start
-#    with_items: "{{ params }}"
+  - name: Create VM
+    virt:
+      name: "{{ item.name }}"
+      command: create
+      state: destroyed
+    with_items: "{{ vms }}"
+
+  - name: Start VM
+    virt:
+      name: "{{ item.name }}"
+      command: start
+    with_items: "{{ vms }}"
