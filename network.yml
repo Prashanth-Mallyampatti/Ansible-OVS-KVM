@@ -1,4 +1,3 @@
----
 - hosts: localhost
   gather_facts: False
 
@@ -6,30 +5,6 @@
     - config_files/network_configs.yml
 
   tasks:
-  - name: Define the network
-    virt_net:
-      command: define
-      name: '{{ item.network_name }}'
-      xml: '{{ lookup("template", "templates/jinja2_templates/bridge.xml.j2") }}'
-      state: present
-    with_items: 
-      - "{{ network.internet }}"
-      - "{{ network.l2 }}"
-      - "{{ network.l3 }}"
-      - "{{ network.other }}"
-    become: yes
-
-  - name: Create the network
-    virt_net:
-      command: create
-      name: '{{ item.network_name }}'
-      autostart: true
-    with_items: 
-      - "{{ network.internet }}"
-      - "{{ network.l2 }}"
-      - "{{ network.l3 }}"
-      - "{{ network.other }}"
-    become: yes
 
   - name: Assign IP addresses to non bridge devices
     command: "ip addr add {{ item.ip_address }}/{{ item.subnet_mask_num }} dev {{ item.bridge_name }}"
@@ -64,7 +39,32 @@
       source: "{{ item.subnet_address }}/{{ item.subnet_mask_num }}"
       jump: MASQUERADE
     when:
-~/Ansible-OVS-KVM      - '"nat" in item.bridge_type'
+      - '"nat" in item.bridge_type'
+    with_items: 
+      - "{{ network.internet }}"
+      - "{{ network.l2 }}"
+      - "{{ network.l3 }}"
+      - "{{ network.other }}"
+    become: yes
+
+  - name: Define the network
+    virt_net:
+      command: define
+      name: '{{ item.network_name }}'
+      xml: '{{ lookup("template", "templates/jinja2_templates/bridge.xml.j2") }}'
+      state: present
+    with_items: 
+      - "{{ network.internet }}"
+      - "{{ network.l2 }}"
+      - "{{ network.l3 }}"
+      - "{{ network.other }}"
+    become: yes
+
+  - name: Create the network
+    virt_net:
+      command: create
+      name: '{{ item.network_name }}'
+      autostart: true
     with_items: 
       - "{{ network.internet }}"
       - "{{ network.l2 }}"

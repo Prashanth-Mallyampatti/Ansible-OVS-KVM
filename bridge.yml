@@ -1,5 +1,7 @@
 ---
 - hosts: localhost
+  gather_facts: False
+
   vars_files:
     - config_files/network_configs.yml
 

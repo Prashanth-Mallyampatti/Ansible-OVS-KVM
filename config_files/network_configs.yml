@@ -6,7 +6,7 @@
         bridge_type: nat/dhcp
         ip_address: 9.9.9.1
         dhcp_start_range: 9.9.9.2
-        dhcp_end_range: 9.9.9.255
+        dhcp_end_range: 9.9.9.254
         dhcp_lease_time: 12h
         subnet_address: 9.9.9.0
         subnet_mask_num: 24

@@ -1,6 +1,6 @@
 ---
 - hosts: localhost
-  gather_facts: no
+  gather_facts: False
 
 - import_playbook: install_packages.yml
 - import_playbook: bridge.yml

@@ -23,27 +23,25 @@
     with_items: "{{ vms }}"
     become: yes
 
-  - name: Populate VM templates
-    blockinfile:
-      path: templates/VM_Templates/{{item.name}}.xml.j2
-      marker: "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
-      insertbefore: "<serial type='pty'>"
-      block: "{{ lookup('file', 'templates/VM_Templates/{{ item.name }}_interfaces.xml') }}"
-    with_items: "{{ vms }}"
-    become: yes
-  
+#  - name: Populate VM templates
+#    blockinfile:
+#      path: templates/VM_Templates/{{item.name}}.xml.j2
+#      marker: "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
+#      insertbefore: "<serial type='pty'>"
+#      block: "{{ lookup('file', 'templates/VM_Templates/{{ item.name }}_interfaces.xml') }}"
+#    with_items: "{{ vms }}"
+#    become: yes
+#  
   - name: Get list of VM disks
     command: "ls {{ disk_dir }}"
     register: disk_file
     changed_when: "disk_file.rc != 0"
     become: yes
 
-  - name: Copy main VM image
-    copy:
-      src: "~/Ansible-OVS-KVM/temp.img"
-      dest: "{{ disk_dir }}/{{ item.name }}.img"
-    with_items: "{{ vms }}"
+  - name: Create VM disks
+    command: virt-builder '{{item.image}}' -o '{{disk_dir}}/{{item.name}}.qcow2' --format qcow2 --update --selinux-relabel --size '{{item.disk}}' --install wireshark,iperf3 --root-password password:admin
     when: item.name not in disk_file.stdout
+    with_items: "{{ vms }}"
     become: yes
 
   - name: Define VMs
@@ -65,3 +63,16 @@
       name: "{{ item.name }}"
       command: start
     with_items: "{{ vms }}"
+
+  - name: Attach interfaces
+    command: virsh attach-interface --domain '{{ item.0.name }}' --type network '{{ item.1 }}'
+    with_subelements:
+      - "{{ vms }}"
+      - networks
+
+  - name: Vars
+    debug: msg="value {{item.0.name}} has {{item.1}}"
+    with_subelements:
+      - "{{ vms }}"
+      - networks
+      
