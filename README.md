@@ -1,53 +1,69 @@
 # Ansible-OVS-KVM
-Ansible to automate the installation of OpenVSwitch L3 network and spawn VM
+Ansible to automate the installation of VMs with user specified details.
 
-This repo contains files required to set up OVS bridge, create Network and spawn VMs. That is `q4_1.yml` task.
-`q4_2.yml` performs logging operation on the VM spawned.
-The scripts are directory structure dependent.
+This repo contains files required to set up OVS bridge in various modes, create different types of Networks and spawn VMs based on the user configured data.
 
 Before running the playbooks: `cd Ansible-OVS-KVM`
 
 `sudo` permissions are required.
 
-To run task 1:
+To run the playbook: **`ansible-playbook init.yml`**
 
-`ansible-playbook q4_1.yml`
+Folder Description: 
 
-Before running task 2 please perform the follwing actions:
+1. `config_files/` : User specified VM and network configuration data
 
-1) after the VMs are spawned, please assign static IPs to both the VMs such that the IP addresses are in the same subnet as given in ansible script: `2.2.2.2/24` and restart the network.
+    *  `config_files/network_configs.yml` : 
+    
+      Please add config data as key value pairs. Sample configuration:
+      ```
+    ---
+        network:
+            internet:
+                - network_name: internet
+                  bridge_name: SW1
+                  bridge_type: nat/dhcp
+                  ip_address: 9.9.9.1
+                  dhcp_start_range: 9.9.9.2
+                  dhcp_end_range: 9.9.9.254
+                  dhcp_lease_time: 12h
+                  subnet_address: 9.9.9.0
+                  subnet_mask_num: 24
+            l2:
+                - network_name: l2
+                  bridge_name: SW2
+                  bridge_type: bridge
+            l3:
+                - network_name: l3
+                  bridge_name: SW3
+                  bridge_type: routed
+                  ip_address: 10.10.10.1
+                  subnet_mask_num: 24
+    ```
 
-```
-[root@localhost ~]# cat /etc/sysconfig/network-scripts/ifcfg-eth1\:0
-DEVICE="eth1:0"
-IPADDR="2.2.2.200"
-NETMASK="255.255.255.0"
-ONBOOT="yes"
-[root@localhost ~]#
-```
-By this way you get IP assigned:
-
-```
-[root@localhost ~]# ip addr show
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-    inet 127.0.0.1/8 scope host lo
-       valid_lft forever preferred_lft forever
-    inet6 ::1/128 scope host
-       valid_lft forever preferred_lft forever
-2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
-    link/ether 00:ee:dd:cc:bb:aa brd ff:ff:ff:ff:ff:ff
-3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
-    link/ether 00:aa:bb:cc:dd:ee brd ff:ff:ff:ff:ff:ff
-    inet 2.2.2.200/24 brd 2.2.2.255 scope global noprefixroute eth1
-       valid_lft forever preferred_lft forever
-    inet6 fe80::2aa:bbff:fecc:ddee/64 scope link
-       valid_lft forever preferred_lft forever
-[root@localhost ~]#
-```
-
-2) Add keys to the VMs : `ssh-keygen` and copy the keys to the VMs via `ssh-copy-id` command. Add the key paths and user name ansible inventory file. (inventory file in the repo) and then run task 2.
-
-To run task 2:
-
-`ansible-playbook q4_2.yml`
+    *  `config_files/network_configs.yml` : 
+    
+      Please add config data as key value pairs. Sample configuration:
+      ```
+      ---
+        vms:
+            - name: AnsibleVM1
+              image: centos-7.5
+              mem: 2
+              vcpu: 5
+              disk: 12G
+              networks: ["internet", "l2" ]
+    
+            - name: AnsibleVM2
+              image: centos-7.5
+              mem: 4
+              vcpu: 4
+              disk: 12G
+              networks: ["l2", "l3" ]
+      ```
+      
+2. `templates/` : This directory contains all the jinja2 templates required to generate VM templates and network templates.
+3. `init.yml` : init playbook to call other playbooks
+4. `bridge.yml` : playbook to create and set OVS bridges
+5. `network.yml` : playbook to create and start various types of user specified networks
+6. `vm.yml` : playbook to spawn vms based on the user configuration.
