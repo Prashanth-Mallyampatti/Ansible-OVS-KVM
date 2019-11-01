@@ -23,15 +23,15 @@
     with_items: "{{ vms }}"
     become: yes
 
-#  - name: Populate VM templates
-#    blockinfile:
-#      path: templates/VM_Templates/{{item.name}}.xml.j2
-#      marker: "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
-#      insertbefore: "<serial type='pty'>"
-#      block: "{{ lookup('file', 'templates/VM_Templates/{{ item.name }}_interfaces.xml') }}"
-#    with_items: "{{ vms }}"
-#    become: yes
-#  
+  - name: Populate VM templates
+    blockinfile:
+      path: templates/VM_Templates/{{item.name}}.xml.j2
+      marker: "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
+      insertbefore: "<serial type='pty'>"
+      block: "{{ lookup('file', 'templates/VM_Templates/{{ item.name }}_interfaces.xml') }}"
+    with_items: "{{ vms }}"
+    become: yes
+  
   - name: Get list of VM disks
     command: "ls {{ disk_dir }}"
     register: disk_file
@@ -39,7 +39,7 @@
     become: yes
 
   - name: Create VM disks
-    command: virt-builder '{{item.image}}' -o '{{disk_dir}}/{{item.name}}.qcow2' --format qcow2 --update --selinux-relabel --size '{{item.disk}}' --install wireshark,iperf3 --root-password password:admin
+    command: virt-builder '{{item.image}}' -o '{{disk_dir}}/{{item.name}}.qcow2' --format qcow2 --update --firstboot /root/dh_client.sh --selinux-relabel --size '{{item.disk}}' --install wireshark,iperf3 --root-password password:admin
     when: item.name not in disk_file.stdout
     with_items: "{{ vms }}"
     become: yes
@@ -64,15 +64,15 @@
       command: start
     with_items: "{{ vms }}"
 
-  - name: Attach interfaces
-    command: virsh attach-interface --domain '{{ item.0.name }}' --type network '{{ item.1 }}'
-    with_subelements:
-      - "{{ vms }}"
-      - networks
-
-  - name: Vars
-    debug: msg="value {{item.0.name}} has {{item.1}}"
-    with_subelements:
-      - "{{ vms }}"
-      - networks
-      
+#  - name: Attach interfaces
+#    command: virsh attach-interface --domain '{{ item.0.name }}' --type network '{{ item.1 }}' --model virtio --config --live
+#    with_subelements:
+#      - "{{ vms }}"
+#      - networks
+#
+#  - name: Vars
+#    debug: msg="value {{item.0.name}} has {{item.1}}"
+#    with_subelements:
+#      - "{{ vms }}"
+#      - networks
+#      

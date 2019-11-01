@@ -20,3 +20,5 @@ virsh undefine AnsibleVM2
 
 virsh destroy AnsibleVM1
 virsh destroy AnsibleVM2
+
+rm -r /var/lib/libvirt/images/Ansible*

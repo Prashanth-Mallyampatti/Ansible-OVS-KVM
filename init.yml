@@ -5,4 +5,4 @@
 - import_playbook: install_packages.yml
 - import_playbook: bridge.yml
 - import_playbook: network.yml
-#- import_playbook: create_vm.yml
+- import_playbook: vm.yml
